@@ -49,7 +49,6 @@ class ViewController: UIViewController {
             
             player.prepareToPlay()
         } else {
-            print(timeInterval)
             timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(play), userInfo: nil, repeats: true)
         }
         isPlaying.toggle()
