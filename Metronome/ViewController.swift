@@ -98,9 +98,11 @@ extension ViewController {
         labelSpeed.text = "\(Int(speed))"
         labelSpeed.font = UIFont.systemFont(ofSize: 50)
         labelSpeed.textColor = .darkGray
+        labelSpeed.textAlignment = .center
         self.view.addSubview(labelSpeed)
         labelSpeed.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
+            make.width.equalTo(100)
             make.bottom.equalTo(btnPlay.snp.top).offset(-50)
         }
         
