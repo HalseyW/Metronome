@@ -11,14 +11,31 @@ import AVFoundation
 import SnapKit
 
 class ViewController: UIViewController {
+    let labelSpeed = UILabel()
     var player: AVAudioPlayer!
     var timer: Timer!
-    var isPlaying = false
-    var speed = 120.0
+    var isPlaying = false {
+        didSet {
+            if oldValue {
+                timer.invalidate()
+                timer = nil
+                player.stop()
+                player.prepareToPlay()
+            } else {
+                timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(play), userInfo: nil, repeats: true)
+            }
+        }
+    }
+    var speed = 120.0 {
+        didSet {
+            labelSpeed.text = "\(Int(speed))"
+            stopPlay()
+            startPlay()
+        }
+    }
     var timeInterval: TimeInterval {
         return 60.0 / speed
     }
-    let labelSpeed = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +43,7 @@ class ViewController: UIViewController {
         initPlayer()
     }
     
+    /// 初始化播放器
     func initPlayer() {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
@@ -41,16 +59,8 @@ class ViewController: UIViewController {
         }
     }
     
+    /// 点击播放按钮
     @objc func onClickPlayButton() {
-        if isPlaying {
-            timer.invalidate()
-            timer = nil
-            player.stop()
-            
-            player.prepareToPlay()
-        } else {
-            timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(play), userInfo: nil, repeats: true)
-        }
         isPlaying.toggle()
     }
     
@@ -59,7 +69,6 @@ class ViewController: UIViewController {
             return
         }
         speed -= 1
-        labelSpeed.text = "\(Int(speed))"
     }
     
     @objc func onClickAccelerateButton() {
@@ -67,11 +76,24 @@ class ViewController: UIViewController {
             return
         }
         speed += 1
-        labelSpeed.text = "\(Int(speed))"
     }
     
     @objc func play() {
         player.play()
+    }
+    
+
+    func startPlay() {
+        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(play), userInfo: nil, repeats: true)
+    }
+    
+    func stopPlay() {
+        if timer == nil {
+            return
+        }
+        timer.invalidate()
+        timer = nil
+        player.stop()
     }
     
     deinit {
