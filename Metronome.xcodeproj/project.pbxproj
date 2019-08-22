@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		77244B28230E911F002DDF56 /* click_sound_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 77244B27230E911F002DDF56 /* click_sound_1.mp3 */; };
 		77FECBA4230E772800871040 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FECBA3230E772800871040 /* AppDelegate.swift */; };
 		77FECBA6230E772800871040 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77FECBA5230E772800871040 /* ViewController.swift */; };
 		77FECBA9230E772800871040 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77FECBA7230E772800871040 /* Main.storyboard */; };
@@ -18,6 +19,7 @@
 /* Begin PBXFileReference section */
 		54D8C21186099A5DF66B9E3D /* Pods-Metronome.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Metronome.release.xcconfig"; path = "Pods/Target Support Files/Pods-Metronome/Pods-Metronome.release.xcconfig"; sourceTree = "<group>"; };
 		6638A6582787524DA0836419 /* Pods_Metronome.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Metronome.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		77244B27230E911F002DDF56 /* click_sound_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = click_sound_1.mp3; sourceTree = "<group>"; };
 		77FECBA0230E772800871040 /* Metronome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Metronome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77FECBA3230E772800871040 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		77FECBA5230E772800871040 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -40,9 +42,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		77244B1C230E7D3A002DDF56 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				77244B27230E911F002DDF56 /* click_sound_1.mp3 */,
+			);
+			path = Sound;
+			sourceTree = "<group>";
+		};
 		77FECB97230E772800871040 = {
 			isa = PBXGroup;
 			children = (
+				77244B1C230E7D3A002DDF56 /* Sound */,
 				77FECBA2230E772800871040 /* Metronome */,
 				77FECBA1230E772800871040 /* Products */,
 				E696F21518FEC5F4EE33357A /* Pods */,
@@ -99,6 +110,7 @@
 				77FECB9C230E772800871040 /* Sources */,
 				77FECB9D230E772800871040 /* Frameworks */,
 				77FECB9E230E772800871040 /* Resources */,
+				03DDC4547CCD28528573FC99 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -148,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				77FECBAE230E772900871040 /* LaunchScreen.storyboard in Resources */,
+				77244B28230E911F002DDF56 /* click_sound_1.mp3 in Resources */,
 				77FECBAB230E772900871040 /* Assets.xcassets in Resources */,
 				77FECBA9230E772800871040 /* Main.storyboard in Resources */,
 			);
@@ -156,6 +169,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		03DDC4547CCD28528573FC99 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Metronome/Pods-Metronome-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Metronome/Pods-Metronome-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		70AA1789EF24869320E20BD6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
