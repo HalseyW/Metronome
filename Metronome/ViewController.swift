@@ -28,14 +28,23 @@ class ViewController: UIViewController {
     /// 是否在播放的标志，因为 mp3 时长太短，player 的 isPlaying 不准确
     var isPlaying = false {
         didSet {
+            if isPlaying {
+                timer = Timer.scheduledTimer(timeInterval: 60.0 / beat, target: self, selector: #selector(play), userInfo: nil, repeats: true)
+            } else {
+                if timer != nil {
+                    timer.invalidate()
+                    timer = nil
+                }
+            }
             btnPlay.isSelected = isPlaying
         }
     }
     /// 当前节奏
-    var beat = 100.0 {
+    var beat = UserDefaults.getBeat() {
         didSet {
             stopTimer()
             startTimer()
+            UserDefaults.saveBeat(beat)
         }
     }
     
@@ -65,23 +74,17 @@ class ViewController: UIViewController {
     ///
     /// - Parameter sender: 播放/暂停按钮
     @objc func onClickPlayButton(_ sender: UIButton) {
-        isPlaying ? stopTimer() : startTimer()
+        isPlaying.toggle()
     }
     
     /// 开始计时（播放）
     func startTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 60.0 / beat, target: self, selector: #selector(play), userInfo: nil, repeats: true)
         isPlaying = true
     }
     
     /// 停止计时（暂停）
     func stopTimer() {
         isPlaying = false
-        if timer == nil {
-            return
-        }
-        timer.invalidate()
-        timer = nil
     }
     
     /// 播放，用于 timer 的调用
@@ -93,7 +96,6 @@ class ViewController: UIViewController {
         stopTimer()
         player.stop()
     }
- 
 }
 
 extension ViewController {
@@ -148,5 +150,19 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.beat = Double(beatsArray[row])
+    }
+}
+
+// MARK: - UserDefaults，保存用户设置的 beat
+extension UserDefaults {
+    /// 获取用户保存的 beat
+    static func getBeat() -> Double {
+        let beat = self.standard.double(forKey: "metronome_ beats")
+        return beat == 0.0 ? 100.0 : beat
+    }
+    
+    /// 保存用户设置的 beat
+    static func saveBeat(_ beat: Double) {
+        self.standard.set(beat, forKey: "metronome_ beats")
     }
 }
