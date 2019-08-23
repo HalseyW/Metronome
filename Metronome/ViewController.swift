@@ -12,42 +12,35 @@ import SnapKit
 
 class ViewController: UIViewController {
     let labelSpeed = UILabel()
-    var player: AVAudioPlayer!
-    var timer: Timer!
-    var isPlaying = false {
-        didSet {
-            if oldValue {
-                timer.invalidate()
-                timer = nil
-                player.stop()
-                player.prepareToPlay()
-            } else {
-                timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(play), userInfo: nil, repeats: true)
-            }
-        }
-    }
-    var speed = 120.0 {
-        didSet {
-            stopPlay()
-            startPlay()
-        }
-    }
-    
-    var timeInterval: TimeInterval {
-        return 60.0 / speed
-    }
-    
-    var speedArray: [Int] {
+    let btnPlay = UIButton()
+    /// pickerView的数组
+    var beatsArray: [Int] {
         var array = [Int]()
         for i in 40 ... 200 {
             array.append(i)
         }
         return array
     }
+    /// 播放器
+    var player: AVAudioPlayer!
+    /// 计时器，用于精准控制节奏
+    var timer: Timer!
+    /// 是否在播放的标志，因为 mp3 时长太短，player 的 isPlaying 不准确
+    var isPlaying = false {
+        didSet {
+            btnPlay.isSelected = isPlaying
+        }
+    }
+    /// 当前节奏
+    var beat = 100.0 {
+        didSet {
+            stopTimer()
+            startTimer()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         initView()
         initPlayer()
     }
@@ -57,10 +50,10 @@ class ViewController: UIViewController {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
             try AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-            
+            /// 路径
             let path = Bundle.main.path(forResource: "click_sound_1", ofType: "mp3")!
             let url = URL(fileURLWithPath: path)
-            
+            /// 播放器
             player = try AVAudioPlayer(contentsOf: url)
             player.prepareToPlay()
         } catch let error as NSError{
@@ -68,32 +61,36 @@ class ViewController: UIViewController {
         }
     }
     
+    /// 点击播放按钮
+    ///
+    /// - Parameter sender: 播放/暂停按钮
     @objc func onClickPlayButton(_ sender: UIButton) {
-        isPlaying.toggle()
-        sender.isSelected.toggle()
+        isPlaying ? stopTimer() : startTimer()
     }
     
-    @objc func play() {
-        player.play()
+    /// 开始计时（播放）
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 60.0 / beat, target: self, selector: #selector(play), userInfo: nil, repeats: true)
+        isPlaying = true
     }
     
-
-    func startPlay() {
-        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(play), userInfo: nil, repeats: true)
-    }
-    
-    func stopPlay() {
+    /// 停止计时（暂停）
+    func stopTimer() {
+        isPlaying = false
         if timer == nil {
             return
         }
         timer.invalidate()
         timer = nil
-        player.stop()
+    }
+    
+    /// 播放，用于 timer 的调用
+    @objc func play() {
+        player.play()
     }
     
     deinit {
-        timer.invalidate()
-        timer = nil
+        stopTimer()
         player.stop()
     }
  
@@ -102,19 +99,18 @@ class ViewController: UIViewController {
 extension ViewController {
     func initView() {
         self.view.backgroundColor = .black
- 
+        /// 节奏选择
         let pickerView = UIPickerView()
         pickerView.delegate = self
         pickerView.dataSource = self
-        pickerView.selectRow(Int(speed - 40), inComponent: 0, animated: false)
+        pickerView.selectRow(Int(beat - 40), inComponent: 0, animated: false)
         self.view.addSubview(pickerView)
         pickerView.snp.makeConstraints { (make) in
             make.width.centerX.equalToSuperview()
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-80)
         }
-        
-        let btnPlay = UIButton()
+        /// 播放/暂停按钮
         btnPlay.setBackgroundImage(UIImage(named: "play"), for: .normal)
         btnPlay.setBackgroundImage(UIImage(named: "pause"), for: .selected)
         self.view.addSubview(btnPlay)
@@ -127,13 +123,14 @@ extension ViewController {
     }
 }
 
+// MARK: - UIPickerViewDelegate, UIPickerViewDataSource
 extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return speedArray.count
+        return beatsArray.count
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
@@ -142,7 +139,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let lable = UILabel()
-        lable.text = String(speedArray[row])
+        lable.text = String(beatsArray[row])
         lable.font = UIFont.systemFont(ofSize: 200)
         lable.textAlignment = .center
         lable.textColor = .lightGray
@@ -150,7 +147,6 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.speed = Double(speedArray[row])
+        self.beat = Double(beatsArray[row])
     }
-    
 }
