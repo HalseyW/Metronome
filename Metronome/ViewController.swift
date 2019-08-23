@@ -109,16 +109,16 @@ extension ViewController {
         self.view.addSubview(pickerView)
         pickerView.snp.makeConstraints { (make) in
             make.width.centerX.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-80)
+            make.height.equalTo(400)
+            make.centerY.equalToSuperview().offset(-50)
         }
         /// 播放/暂停按钮
-        btnPlay.setBackgroundImage(UIImage(named: "play"), for: .normal)
-        btnPlay.setBackgroundImage(UIImage(named: "pause"), for: .selected)
+        btnPlay.setImage(UIImage(named: "play"), for: .normal)
+        btnPlay.setImage(UIImage(named: "pause"), for: .selected)
         self.view.addSubview(btnPlay)
         btnPlay.snp.makeConstraints { (make) in
-            make.size.equalTo(40)
-            make.top.equalTo(pickerView.snp.bottom).offset(50)
+            make.size.equalTo(100)
+            make.top.equalTo(pickerView.snp.bottom).offset(40)
             make.centerX.equalToSuperview()
         }
         btnPlay.addTarget(self, action: #selector(onClickPlayButton(_:)), for: .touchUpInside)
