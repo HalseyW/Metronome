@@ -28,17 +28,26 @@ class ViewController: UIViewController {
     }
     var speed = 120.0 {
         didSet {
-            labelSpeed.text = "\(Int(speed))"
             stopPlay()
             startPlay()
         }
     }
+    
     var timeInterval: TimeInterval {
         return 60.0 / speed
     }
     
+    var speedArray: [Int] {
+        var array = [Int]()
+        for i in 40 ... 200 {
+            array.append(i)
+        }
+        return array
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         initView()
         initPlayer()
     }
@@ -59,23 +68,9 @@ class ViewController: UIViewController {
         }
     }
     
-    /// 点击播放按钮
-    @objc func onClickPlayButton() {
+    @objc func onClickPlayButton(_ sender: UIButton) {
         isPlaying.toggle()
-    }
-    
-    @objc func onClickDecelerateButton() {
-        if speed == 40 {
-            return
-        }
-        speed -= 1
-    }
-    
-    @objc func onClickAccelerateButton() {
-        if speed == 200 {
-            return
-        }
-        speed += 1
+        sender.isSelected.toggle()
     }
     
     @objc func play() {
@@ -107,45 +102,55 @@ class ViewController: UIViewController {
 extension ViewController {
     func initView() {
         self.view.backgroundColor = .black
+ 
+        let pickerView = UIPickerView()
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        pickerView.selectRow(Int(speed - 40), inComponent: 0, animated: false)
+        self.view.addSubview(pickerView)
+        pickerView.snp.makeConstraints { (make) in
+            make.width.centerX.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-80)
+        }
         
         let btnPlay = UIButton()
-        btnPlay.backgroundColor = .darkGray
+        btnPlay.setBackgroundImage(UIImage(named: "play"), for: .normal)
+        btnPlay.setBackgroundImage(UIImage(named: "pause"), for: .selected)
         self.view.addSubview(btnPlay)
         btnPlay.snp.makeConstraints { (make) in
-            make.size.equalTo(100)
-            make.center.equalToSuperview()
-        }
-        btnPlay.addTarget(self, action: #selector(onClickPlayButton), for: .touchUpInside)
-        
-        labelSpeed.text = "\(Int(speed))"
-        labelSpeed.font = UIFont.systemFont(ofSize: 50)
-        labelSpeed.textColor = .darkGray
-        labelSpeed.textAlignment = .center
-        self.view.addSubview(labelSpeed)
-        labelSpeed.snp.makeConstraints { (make) in
+            make.size.equalTo(40)
+            make.top.equalTo(pickerView.snp.bottom).offset(50)
             make.centerX.equalToSuperview()
-            make.width.equalTo(100)
-            make.bottom.equalTo(btnPlay.snp.top).offset(-50)
         }
-        
-        let btnDecelerate = UIButton()
-        btnDecelerate.backgroundColor = .darkGray
-        self.view.addSubview(btnDecelerate)
-        btnDecelerate.snp.makeConstraints { (make) in
-            make.size.equalTo(50)
-            make.centerY.equalTo(labelSpeed)
-            make.right.equalTo(labelSpeed.snp.left).offset(-20)
-        }
-        btnDecelerate.addTarget(self, action: #selector(onClickDecelerateButton), for: .touchUpInside)
-        
-        let btnAccelerate = UIButton()
-        btnAccelerate.backgroundColor = .darkGray
-        self.view.addSubview(btnAccelerate)
-        btnAccelerate.snp.makeConstraints { (make) in
-            make.size.equalTo(50)
-            make.centerY.equalTo(labelSpeed)
-            make.left.equalTo(labelSpeed.snp.right).offset(20)
-        }
-        btnAccelerate.addTarget(self, action: #selector(onClickAccelerateButton), for: .touchUpInside)
+        btnPlay.addTarget(self, action: #selector(onClickPlayButton(_:)), for: .touchUpInside)
     }
+}
+
+extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return speedArray.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 200
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let lable = UILabel()
+        lable.text = String(speedArray[row])
+        lable.font = UIFont.systemFont(ofSize: 200)
+        lable.textAlignment = .center
+        lable.textColor = .lightGray
+        return lable
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.speed = Double(speedArray[row])
+    }
+    
 }
