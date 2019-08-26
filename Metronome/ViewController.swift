@@ -30,11 +30,13 @@ class ViewController: UIViewController {
         didSet {
             if isPlaying {
                 timer = Timer.scheduledTimer(timeInterval: 60.0 / beat, target: self, selector: #selector(play), userInfo: nil, repeats: true)
+                UIApplication.shared.isIdleTimerDisabled = true
             } else {
                 if timer != nil {
                     timer.invalidate()
                     timer = nil
                 }
+                UIApplication.shared.isIdleTimerDisabled = false
             }
             btnPlay.isSelected = isPlaying
         }
