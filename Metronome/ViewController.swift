@@ -58,18 +58,14 @@ class ViewController: UIViewController {
     
     /// 初始化播放器
     func initPlayer() {
+        let path = Bundle.main.path(forResource: "click_sound_1", ofType: "mp3")!
+        let url = URL(fileURLWithPath: path)
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .duckOthers)
-            try AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
-            /// 路径
-            let path = Bundle.main.path(forResource: "click_sound_1", ofType: "mp3")!
-            let url = URL(fileURLWithPath: path)
-            /// 播放器
             player = try AVAudioPlayer(contentsOf: url)
-            player.prepareToPlay()
-        } catch let error as NSError{
-            fatalError(error.localizedDescription)
+        } catch {
+            fatalError("player init fail")
         }
+        player.prepareToPlay()
     }
     
     /// 点击播放按钮
