@@ -144,7 +144,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let lable = UILabel()
         lable.text = String(beatsArray[row])
-        lable.font = UIFont.systemFont(ofSize: 200)
+        lable.font = UIFont.systemFont(ofSize: UIScreen.main.bounds.width / 2)
         lable.textAlignment = .center
         lable.textColor = .lightGray
         return lable
